@@ -39,7 +39,7 @@ class Movimientos_General():
         return self.__nombre
 
     def get_tipo(self):
-        return self.__tipo
+        return self.__tipo #varaible de tipo enum
 
     def get_daño(self):
         return self.__daño
@@ -66,16 +66,16 @@ class Superheroes(SerVivo):
         self.__alias = alias
         self.__identidadSecreta = identidadSecreta
         self.__movimientos = []
-        self.__tipo = tipo    #solo pueden ser 2 HUMANO Y NO HUMANO sino error
+        self.__tipo = tipo    #solo pueden ser 2 HUMANO Y NO HUMANO sino error. este es un objeto de tipo enumerador-->Superheroe_Type.HUMANO o .NOHUMANO
         if type(tipo) != Superheroe_Type:
             raise TypeError("Invalid type for attribute tipo")
-        elif tipo !=1 or tipo!=0:
+        elif tipo.value !=1 or tipo.value!=0:
             raise ValueError("introduzca un numero valido")
         elif tipo.value ==1:
             self.__parrilla_poderes = [random.randint(3,7),random.randint(1,6), random.randint(2,5), random.randint(2,5), random.randint(1,6), random.randint(1,7)]
-        elif tipo.value ==0:
+        else:  #elif tipo.value ==0:
             self.__parrilla_poderes = [random.randint(4,6),random.randint(1,7), random.randint(1,7), random.randint(3,7), random.randint(1,7), random.randint(3,6)]
-        elif type(esc) != Escenarios:
+        if type(esc) != Escenarios:
             raise TypeError("Invalid type for attribute tipo")
         else:
             self.__coste = (esc.get_monedas()/esc.get_miembros_ekip())*(sum(self.__parrilla_poderes)/30)
@@ -106,7 +106,7 @@ class Superheroes(SerVivo):
         return self._energia
 
     def isalive(self):
-        return self.vivo
+        return self.is_vivo()
 
 
     def set_movimientos(self,x):#cambia los mov. poniendo su valor real(en funcion del escenario)
@@ -126,8 +126,9 @@ class Superheroes(SerVivo):
                 self.die()
                 self._energia = 0
 
-    def fight_attack(self, hero, rival):
-        hero.fight_defense(self.__movimientos[rival].get_daño())
+    def fight_attack(self, rival):#no tiene sentido que se implemente el atributo hero porque el self ya es el hero
+        posicion = random.randint(0,len(self.__movimientos))#cojo un numero al azar de ls lista de movimientos del superheroe
+        rival.fight_defense(self.__movimientos[posicion].get_daño())
 
     def __str__(self):
         return str(self.get_identificador()) + "| Alias: " + self.get_alias() + "| Tipo:" + self.get_tipo().name + "| Coste:" + str(self.get_coste()) + "| Energia:" + str(self.get_energia()) + "\n"
